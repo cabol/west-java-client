@@ -1,5 +1,15 @@
 *.class
 
+# Eclipse files
+.settings
+.project
+.classpath
+target
+
+# Others
+._*
+.DS_Store
+
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 

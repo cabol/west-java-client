@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- LOG4J Initializer -->
+    <bean id="log4jInitializer" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod" value="org.springframework.util.Log4jConfigurer.initLogging"/>
+        <property name="arguments">
+            <list>
+                <value>classpath:META-INF/logging/log4j.properties</value>  
+            </list>
+        </property>
+    </bean>
+    
+    <!-- Client Properties -->
+    <bean id="clientProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>classpath:META-INF/properties/config.properties</value>
+            </list>
+        </property>
+        <property name="ignoreResourceNotFound" value="true"/>
+    </bean>
+    
+    <!-- Map to store server events -->
+    <bean id="events" class="java.util.concurrent.ConcurrentHashMap"/>
+    
+    <!-- Beans -->
+    <bean id="myHandler" class="co.niagarasystems.west.test.TestSessionAndMessageHandler">
+        <property name="events" ref="events"/>
+    </bean>
+    
+    <bean id="wsClientHandler" class="co.niagarasystems.west.client.ws.WebSocketClientHandler">
+        <property name="handler" ref="myHandler"/>
+    </bean>
+    <bean id="westClient" class="co.niagarasystems.west.client.support.DefaultWestClient">
+        <constructor-arg ref="wsClientHandler"/>
+        <constructor-arg value="#{ clientProps.getProperty('conn.uri')?:'ws://localhost:8080/west/java-client-test' }"/>
+    </bean>
+
+</beans>

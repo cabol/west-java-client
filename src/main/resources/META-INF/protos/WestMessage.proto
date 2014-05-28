@@ -1,0 +1,12 @@
+// Java package specifiers
+option java_package = "co.niagarasystems.west.protos";
+option java_outer_classname = "MessageProtos";
+
+// WEST message specification
+message Message {
+    required string event = 1;
+    optional string channel = 2;
+    optional string from = 3;
+    optional string id = 4;
+    optional bytes data = 5;
+}
